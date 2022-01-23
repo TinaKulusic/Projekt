@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 /*
   Function Declarations for builtin shell commands:
@@ -10,6 +11,7 @@
 int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
+int lsh_time(char **args);
 
 /*
   List of builtin commands, followed by their corresponding functions.
@@ -17,13 +19,16 @@ int lsh_exit(char **args);
 char *builtin_str[] = {
   "cd",
   "help",
+  "time",
   "exit"
 };
 
 int (*builtin_func[]) (char **) = {
   &lsh_cd,
   &lsh_help,
+  &lsh_time,
   &lsh_exit
+  
 };
 
 int lsh_num_builtins() {
@@ -50,7 +55,15 @@ int lsh_cd(char **args)
   }
   return 1;
 }
-
+int lsh_time(char **args)
+{
+  time_t mytime = time(NULL);
+  char *time_str = ctime(&mytime);
+  time_str[strlen(time_str) - 1] = 0;
+  printf("Current time: %s", time_str);
+  printf("\n");
+  return 1;
+}
 /**
    @brief Builtin command: print help.
    @param args List of args.  Not examined.
