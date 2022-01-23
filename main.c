@@ -12,8 +12,11 @@ int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
 int lsh_time(char **args);
-int history(char **args);
-int deletehistory(char **args);
+int lsh_print_hist(char **args);
+int delete_all_history(char **args);
+int run_prev_history(char **args);
+int run_target_history(char **args, int bang_num);
+
 
 
 
@@ -24,7 +27,6 @@ char *builtin_str[] = {
   "cd",
   "help",
   "time",
-  "deletehistory",
   "history",
   "exit"
 };
@@ -34,8 +36,7 @@ int (*builtin_func[]) (char **) = {
   &lsh_help,
   &lsh_time,
   &lsh_exit,
-  &lsh_history,
-  &lsh_delete
+  &lsh_history
   
 };
 
@@ -63,7 +64,7 @@ int lsh_cd(char **args)
   }
   return 1;
 }
-int history(char **args)
+int lsh_print_hist(char **args)
 {
   char line[100][100];
   int x;
@@ -115,12 +116,73 @@ int history(char **args)
 }
 
 // delete all entries in the history record
-int deletehistory(char **args)
+int delete_all_history(char **args)
 {
   FILE *record;
   record = fopen(HISTORY_FILE, "w");
   fclose(record);
   return 1;
+}
+int run_prev_history(char **args)
+{
+  char line[100][100];
+  char **temp;
+  int x = 0;
+  int y = 0;
+  int total = 0;
+
+  FILE *record = NULL;
+  record = fopen(HISTORY_FILE, "r");
+  while (fgets(line[x], 100, record))
+  {
+    line[x][strlen(line[x]) - 1] = 0;
+    x++;
+  }
+
+  for (y = 0; y < builtin_func_count(); y++)
+  {
+    if (strcmp(builtin_str[y], line[x - 1]) == 0)
+    {
+      return (*builtin_func[y])(args);
+    }
+  }
+
+  temp = split_line(line[x - 1]);
+  fclose(record);
+  return launch(temp);
+}
+
+
+// *******************************************************************************************
+
+// use index to find target history and launch
+int run_target_history(char **args, int index)
+{
+
+  FILE *record = NULL;
+  int x = 0;
+  int y = 0;
+  char line[100][100];
+  // int total = 0;
+  char **temp;
+
+  record = fopen(HISTORY_FILE, "r");
+  while (fgets(line[x], 100, record) && x < index)
+  {
+    line[x][strlen(line[x]) - 1] = 0;
+    x++;
+  }
+  for (y = 0; y < builtin_func_count(); y++)
+  {
+    if (strcmp(builtin_str[y], line[x - 1]) == 0)
+    {
+      return (builtin_func[y])(args);
+    }
+  }
+
+  temp = split_line(line[x - 1]);
+  fclose(record);
+  return launch(temp);
 }
 int lsh_time(char **args)
 {
