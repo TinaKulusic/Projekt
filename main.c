@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-char *listOfArgs[SIZE];
+
 /*
   Function Declarations for builtin shell commands:
  */
@@ -12,7 +12,7 @@ int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
 int lsh_time(char **args);
-void echo(long long int totalArgsInEachCommand, char *listOfArgs[]);
+
 
 /*
   List of builtin commands, followed by their corresponding functions.
@@ -21,7 +21,6 @@ char *builtin_str[] = {
   "cd",
   "help",
   "time",
-  "echo",
   "exit"
 };
 
@@ -29,7 +28,6 @@ int (*builtin_func[]) (char **) = {
   &lsh_cd,
   &lsh_help,
   &lsh_time,
-  &lsh_echo,
   &lsh_exit
   
 };
@@ -58,15 +56,7 @@ int lsh_cd(char **args)
   }
   return 1;
 }
-void lsh_echo(long long int totalArgsInEachCommand, char *listOfArgs[]) {
-    if (totalArgsInEachCommand > 1) {
-        for(int i = 1; i < totalArgsInEachCommand; i++) {
-            printf("%s ", listOfArgs[i]);
-        }
-    }
-    printf("\n");
-    return;
-}
+
 int lsh_time(char **args)
 {
   time_t mytime = time(NULL);
