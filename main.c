@@ -13,7 +13,7 @@ int lsh_help(char **args);
 int lsh_exit(char **args);
 int lsh_time(char **args);
 int history(char **args);
-int delete(char **args);
+int deletehistory(char **args);
 
 
 
@@ -24,7 +24,7 @@ char *builtin_str[] = {
   "cd",
   "help",
   "time",
-  "delete",
+  "deletehistory",
   "history",
   "exit"
 };
@@ -115,7 +115,7 @@ int lsh_history(char **args)
 }
 
 // delete all entries in the history record
-int lsh_delete(char **args)
+int lsh_deletehistory(char **args)
 {
   FILE *record;
   record = fopen(HISTORY_FILE, "w");
