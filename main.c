@@ -63,7 +63,7 @@ int lsh_cd(char **args)
   }
   return 1;
 }
-int lsh_history(char **args)
+int history(char **args)
 {
   char line[100][100];
   int x;
@@ -115,7 +115,7 @@ int lsh_history(char **args)
 }
 
 // delete all entries in the history record
-int lsh_deletehistory(char **args)
+int deletehistory(char **args)
 {
   FILE *record;
   record = fopen(HISTORY_FILE, "w");
