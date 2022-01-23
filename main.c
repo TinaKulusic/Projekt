@@ -12,6 +12,7 @@ int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
 int lsh_time(char **args);
+void lsh_pwd();
 
 /*
   List of builtin commands, followed by their corresponding functions.
@@ -20,6 +21,7 @@ char *builtin_str[] = {
   "cd",
   "help",
   "time",
+  "pwd",
   "exit"
 };
 
@@ -27,6 +29,7 @@ int (*builtin_func[]) (char **) = {
   &lsh_cd,
   &lsh_help,
   &lsh_time,
+  &lsh_pwd,
   &lsh_exit
   
 };
@@ -54,6 +57,15 @@ int lsh_cd(char **args)
     }
   }
   return 1;
+}
+void lsh_pwd() {
+    char myPwd[SIZE];
+    if(getcwd(myPwd, SIZE) == NULL) {
+        perror("");
+        exit(0);
+    }
+    printf("%s\n", myPwd);
+    return;
 }
 int lsh_time(char **args)
 {
