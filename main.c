@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-
+#define HISTORY_FILE "/home/ming/Desktop/history.txt"
 /*
   Function Declarations for builtin shell commands:
  */
@@ -12,6 +12,9 @@ int lsh_cd(char **args);
 int lsh_help(char **args);
 int lsh_exit(char **args);
 int lsh_time(char **args);
+int history(char **args);
+int delete(char **args);
+
 
 
 /*
@@ -21,6 +24,8 @@ char *builtin_str[] = {
   "cd",
   "help",
   "time",
+  "delete",
+  "history",
   "exit"
 };
 
@@ -28,7 +33,9 @@ int (*builtin_func[]) (char **) = {
   &lsh_cd,
   &lsh_help,
   &lsh_time,
-  &lsh_exit
+  &lsh_exit,
+  &lsh_history,
+  &lsh_delete
   
 };
 
@@ -56,7 +63,65 @@ int lsh_cd(char **args)
   }
   return 1;
 }
+int lsh_history(char **args)
+{
+  char line[100][100];
+  int x;
+  int y = 0;
+  int total = 0;
+  int temp = 0;
 
+
+
+  FILE * record = NULL;
+  record = fopen(HISTORY_FILE, "r");  // open connection to history record
+
+  if (record != NULL)  
+  {
+    fseek(record, 0, SEEK_END);
+    x = ftell(record);  
+  //  printf("%i", x);
+  //  printf("%i", &x);
+    if (x == 0)  
+    {
+      printf("History.txt file empty.  Please enter more commands.\n");
+      return 1;
+    }
+  }
+
+  fclose(record);  // close record stream
+  free(record);  // deallocate record
+  record = fopen(HISTORY_FILE, "r");  //
+
+  while (fgets(line[y], 100, record))
+  {
+    line[y][strlen(line[y]) - 1] = 0;    // 'remove \n' 
+    y++;
+  }
+
+  total = y;
+  printf("\n");
+  printf("****************************************************\n");
+  for (y = 0; y < total; ++y)
+  {
+    printf("%d  ", y + 1);
+    printf("%s", line[y]);
+    printf("\n");
+  }
+  printf("****************************************************\n");
+  printf("\n");
+  fclose(record);  // close history file
+  return 1;
+}
+
+// delete all entries in the history record
+int lsh_delete(char **args)
+{
+  FILE *record;
+  record = fopen(HISTORY_FILE, "w");
+  fclose(record);
+  return 1;
+}
 int lsh_time(char **args)
 {
   time_t mytime = time(NULL);
